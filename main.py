@@ -160,8 +160,8 @@ frauded.drop("reportedTime", axis=1, inplace=True)
 
 # transaction data
 trans = pd.read_csv("transactions_obf.csv", 
-                           parse_dates=['transactionTime'],
-                           index_col=0)
+                    parse_dates=['transactionTime'],
+                    index_col=0)
 original_trans = trans.copy()
 trans = clean_trans(trans)
 
@@ -201,7 +201,9 @@ print("Training the logistic regression model .............................\n")
 # grid search we set the class_weight to the class ratio and tune a couple of C
 model_params = {"C": [0.1, 1, 10]}
 
-logit = LogisticRegression(random_state=9876, class_weight={0:1, 1:135})
+logit = LogisticRegression(random_state=9876,
+                           class_weight={0:1, 1:135},
+                           max_iter=300)
 
 grid = GridSearchCV(logit, model_params, scoring="roc_auc", cv=10, 
                     n_jobs=-1, verbose=0)
@@ -214,7 +216,7 @@ print(f"The final model has a AUC score of {auc} on test data.\n")
 
 
 #%% Evaluate loss prevention with the model
-print(f"Evaluating fraud prevention of the model ..........................\n")
+print("Evaluating fraud prevention of the model ..........................\n")
 
 # Find the top 400 transaction for human team to review and evaluation how much
 # loss prevented by the model
